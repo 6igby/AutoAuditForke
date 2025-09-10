@@ -172,6 +172,19 @@ jobs:
         run: |
           docker push ${{ secrets.DOCKER_USERNAME }}/engine:${{ steps.set-env.outputs.ENV_NAME }}
 
+      - name: Scan Docker image with Grype
+        uses: anchore/scan-action@v3
+        with:
+          image: ${{ secrets.DOCKER_USERNAME }}/engine:${{ steps.set-env.outputs.ENV_NAME }}
+          fail-build: true
+          severity-cutoff: medium
+          output-format: table
+          only-fixed: false
+
+      - name: Upload Anchore scan SARIF report
+        uses: github/codeql-action/upload-sarif@v2
+        with:
+          sarif_file: ${{ steps.scan.outputs.sarif }}
 
       # --- Replaced  Docker Hub steps with Cloud Build Trigger ---
 #      - name: Trigger Cloud Build for Docker Image
