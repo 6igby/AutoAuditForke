@@ -18,7 +18,7 @@ jobs:
       # Required if adapting for pull requests later
       pull-requests: read
     outputs:
-      backend: ${{ steps.filter.outputs.backend }}
+      frontend: ${{ steps.filter.outputs.frontend }}
     steps:
       - uses: actions/checkout@v4
       - uses: dorny/paths-filter@v3
@@ -33,8 +33,8 @@ jobs:
   analyze:
     name: Security Analysis on (${{ matrix.language }})
     needs: changes
-    if: github.event_name != 'push' || needs.changes.outputs.backend == 'true'  
-    runs-on: ${{ (matrix.language == 'swift' && 'macos-latest') || 'ubuntu-latest' }}
+    if: github.event_name != 'push' || needs.changes.outputs.frontend == 'true'
+    runs-on: ubuntu-latest
     permissions:
       security-events: write
       packages: read
@@ -56,16 +56,6 @@ jobs:
       uses: github/codeql-action/init@v3
       with:
         languages: ${{ matrix.language }}
-        build-mode: ${{ matrix.build-mode }}
-    - if: matrix.build-mode == 'manual'
-      shell: bash
-      run: |
-        echo 'If you are using a "manual" build mode for one or more of the' \
-          'languages you are analyzing, replace this with the commands to build' \
-          'your code, for example:'
-        echo '  make bootstrap'
-        echo '  make release'
-        exit 1
 
     - name: Perform CodeQL Analysis
       uses: github/codeql-action/analyze@v3
@@ -76,7 +66,7 @@ jobs:
     name: Linting Code
     runs-on: ubuntu-latest
     needs: [changes, analyze]
-    if: github.event_name != 'push' || needs.changes.outputs.frontend == 'true'  
+    if: github.event_name != 'push' || needs.changes.outputs.frontend == 'true'
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
