@@ -47,7 +47,11 @@ Automated GCP compliance assessment tool built with FastAPI. This API provides a
 backend-api/
 ├── app/
 │   ├── api/
+<<<<<<< HEAD
 │   │   └── v1/               # Public + private endpointss
+=======
+│   │   └── v1/               # Public + private endpoint
+>>>>>>> cdc462def0dd7b10f259de0e7dfbee241eb3db9d
 │   │
 │   ├── core/                 # Config, logging, errors
 │   │
